@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jqueryui@1.13.3",
+      "destination": "wwwroot/jqueryui/"
+    },
+    {
+      "library": "jquery-ui-multiselect-widget@3.0.1",
+      "destination": "wwwroot/jquery-ui-multiselect-widget/"
+    },
+    {
+      "library": "datatable@2.0.2",
+      "destination": "wwwroot/datatable/",
+      "files": [
+        "js/datatable.min.js",
+        "css/datatable.min.css",
+        "css/datatable-bootstrap.min.css",
+        "js/datatable.jquery.min.js"
+      ]
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/datatables/"
+    }
+  ]
+}
