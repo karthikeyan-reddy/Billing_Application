@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace ShoppingApp.data;
+namespace ShoppingApp.Data;
 
 public partial class ShoppingApplicationContext : DbContext
 {
@@ -15,16 +15,34 @@ public partial class ShoppingApplicationContext : DbContext
     {
     }
 
+    public virtual DbSet<BilledProduct> BilledProducts { get; set; }
+
     public virtual DbSet<BillingTable> BillingTables { get; set; }
 
     public virtual DbSet<ItemsTable> ItemsTables { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public virtual DbSet<User> Users { get; set; }
 
-        => optionsBuilder.UseSqlServer("Server=LAPTOP-98T4PT03\\sqlexpress;Database=Shopping_Application;Integrated Security=True;Trust Server Certificate=True");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-98T4PT03\\sqlexpress;Initial Catalog=Shopping_Application;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<BilledProduct>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Billed_Products");
+
+            entity.Property(e => e.BillId).HasColumnName("BillID");
+            entity.Property(e => e.ProductName)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("productName");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+        });
+
         modelBuilder.Entity<BillingTable>(entity =>
         {
             entity.HasKey(e => e.BillNumber);
@@ -71,6 +89,31 @@ public partial class ShoppingApplicationContext : DbContext
                 .HasColumnName("price");
             entity.Property(e => e.StockAvailable).HasColumnName("stock_Available");
             entity.Property(e => e.TotalStock).HasColumnName("Total_Stock");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.UserName).HasName("Pk_UserName");
+
+            entity.HasIndex(e => e.BusinessName, "BusinessName_Unique").IsUnique();
+
+            entity.HasIndex(e => e.UserName, "UserName_Unique").IsUnique();
+
+            entity.Property(e => e.UserName)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.BusinessName)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.LastName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Password)
+                .HasMaxLength(100)
+                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

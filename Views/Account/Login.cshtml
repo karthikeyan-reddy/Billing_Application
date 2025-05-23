@@ -1,0 +1,20 @@
+﻿@model ShoppingApp.Models.Login
+
+<div style="color:aliceblue;margin-top:5%">
+    @using(Html.BeginForm("Login", "Account", FormMethod.Post)){
+        <div id="form">
+            <div>@Html.DisplayNameFor(m => m.UserName)</div>
+            <div>@Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @required = "required" })</div><div>@Html.ValidationMessageFor(m => m.UserName)</div>
+            <div>@Html.DisplayNameFor(m => m.Password)</div>
+            <div>@Html.TextBoxFor(m => m.Password, new { @class = "form-control", @required = "required", @type="password" })</div><div>@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })</div>
+
+            <div>@Html.DisplayFor(m => m.Error)</div>
+
+            <div>@Html.ActionLink("Register", "Register", "Account", new { }, new { @class = "btn btn-primary" })</div>
+
+            <div>
+                <input type="submit" value="Login" class="btn btn-success" />
+            </div>
+        </div>
+    }
+</div>

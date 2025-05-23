@@ -1,4 +1,4 @@
-﻿using ShoppingApp.data;
+﻿using ShoppingApp.Data;
 
 namespace ShoppingApp.Models
 {

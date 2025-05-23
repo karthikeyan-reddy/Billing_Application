@@ -23,6 +23,14 @@
     {
       "library": "datatables@1.10.21",
       "destination": "wwwroot/datatables/"
+    },
+    {
+      "library": "font-awesome@6.7.2",
+      "destination": "wwwroot/font-awesome/",
+      "files": [
+        "css/all.min.css",
+        "js/all.min.js"
+      ]
     }
   ]
 }

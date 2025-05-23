@@ -6,18 +6,18 @@
 
 <style>
     th, td {
-        border-radius: 5px;
-        border: 1px solid black;
-        text-align: center;
+    border-radius: 5px;
+    border: 1px solid black;
+    text-align: center;
     }
 
     table.dataTable tbody td {
-        padding: 0px 0px;
-        border-radius: 0px;
+    padding: 0px 0px;
+    border-radius: 0px;
     }
 
     #products_m {
-        width: max-content;
+    width: max-content;
     }
 </style>
 @{
@@ -29,7 +29,7 @@
     };
 }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
-        type="text/javascript">
+type="text/javascript">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
 
@@ -43,12 +43,12 @@
                 </li>
             </ul>
         </div>
-        @*  <div class="nav-item" style="width:10%">
-            <a class="nav-link" href="#"><i class="fa fa-user"></i>User Name</a>
+         <div class="nav-item" style="width:15%">
+            <p class="" style="color:aliceblue" ><i class="fa fa-user"></i>@User.FindFirst("FullName")?.Value</p>
         </div>
         <div class="nav-item" style="width:10%">
-            <button class="btn btn-outline-danger" type="submit">Signout</button>
-        </div> *@
+            @Html.ActionLink("Logout", "Logout", "Account",new { }, new { @class = "btn btn-outline-danger" })
+        </div>
     </nav>
 </header>
 
@@ -95,7 +95,7 @@
                         <td>@iterator</td>
                         <td>@bill.CustomerName</td>
                         <td>@bill.TotalAmount</td>
-                        <td><button class="btn btn-warning" style="margin-left:2px">View</button><button class="btn btn-success" style="margin-left:2px">Print</button></td>
+                        <td><button class="btn btn-warning viewBill" data-itemnumber="@bill.BillNumber" style="margin-left:2px">View</button><button class="btn btn-success printBill" data-itemnumber="@bill.BillNumber" style="margin-left:2px">Print</button></td>
                     </tr>
                     iterator++;
                 }
@@ -115,56 +115,19 @@
         <div class="col-sm" style="height:50%;">
             <h4 style="color:aliceblue">Frequently Ordered</h4>
             <div>
-                <div class="card" style="display:inline-block;width:18%">
-                    <div class="card-header">
-                        Product Name
+                @foreach(var item in Model.FrequentItems)
+                {
+                    <div class="card" style="display:inline-block;width:18%;height:25%">
+                        <div class="card-header">
+                            @item.ItemName
+                        </div>
+                        <div class="card-body">
+                            <p>Price: @item.Price</p>
+                            <p class="btn btn-primary">Stock Left: @item.StockAvailable</p>
+                            <p style="overflow:hidden;height:25px">Description: @item.Description</p>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p>Product Details</p>
-                        <p>Product Price</p>
-                        <a class="btn btn-primary">Add</a>
-                    </div>
-                </div>
-                <div class="card" style="display:inline-block;width:18%">
-                    <div class="card-header">
-                        Product Name
-                    </div>
-                    <div class="card-body">
-                        <p>Product Details</p>
-                        <p>Product Price</p>
-                        <a class="btn btn-primary">Add</a>
-                    </div>
-                </div>
-                <div class="card" style="display:inline-block;width:18%">
-                    <div class="card-header">
-                        Product Name
-                    </div>
-                    <div class="card-body">
-                        <p>Product Details</p>
-                        <p>Product Price</p>
-                        <a class="btn btn-primary">Add</a>
-                    </div>
-                </div>
-                <div class="card" style="display:inline-block;width:18%">
-                    <div class="card-header">
-                        Product Name
-                    </div>
-                    <div class="card-body">
-                        <p>Product Details</p>
-                        <p>Product Price</p>
-                        <a class="btn btn-primary">Add</a>
-                    </div>
-                </div>
-                <div class="card" style="display:inline-block;width:18%">
-                    <div class="card-header">
-                        Product Name
-                    </div>
-                    <div class="card-body">
-                        <p>Product Details</p>
-                        <p>Product Price</p>
-                        <a class="btn btn-primary">Add</a>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>
@@ -176,6 +139,7 @@
         <div><span class="form-text">Product Price :</span>@Html.TextBoxFor(m => m.Item.Price, new { @class = "form-control", @type = "number" })</div>
         <div><span class="form-text">Product Description :</span>@Html.TextBoxFor(m => m.Item.Description, new { @class = "form-control" })</div>
         <div><span class="form-text">Total Stock :</span>@Html.TextBoxFor(m => m.Item.TotalStock, new { @class = "form-control", @type = "number" })</div>
+        <div><input type="hidden" id="itemNumber" /></div>
     </form>
 </div>
 
@@ -213,103 +177,49 @@
         </div>
     </form>
 </div>
-@* 
-@Html.BeginForm("AddBill", "Home", FormMethod.Post, new { id = "addBill" }){
-<div id="billModal" title="Create Bill">
-    <form>
-        <div>
-            @Html.LabelFor(m => m.Bill.CustomerName)
-            @Html.TextBoxFor(m => m.Bill.CustomerName, new { @class = "form-control" })
-        </div>
 
-        <div>
-            @Html.Label("Products :")
-            @Html.DropDownListFor(m => m.Bill.products, new SelectList(Model.Items, "ItemNumber", "ItemName"), new { @class = "form-control", multiple = "multiple" })
-
-        </div>
-
-        <div>
-            @Html.LabelFor(m => m.Bill.CustomerMobileNumber)
-            @Html.TextBoxFor(m => m.Bill.CustomerMobileNumber, new { @class = "form-control" })
-        </div>
-        <div>
-            @Html.LabelFor(m => m.Bill.CustomerEmailId)
-            @Html.TextBoxFor(m => m.Bill.CustomerEmailId, new { @class = "form-control" })
-        </div>
-        <div>
-            @Html.LabelFor(m => m.Bill.CustomerAddress)
-            @Html.TextBoxFor(m => m.Bill.CustomerAddress, new { @class = "form-control" })
-        </div>
-        <div>
-            @Html.LabelFor(m => m.Bill.TotalAmount)
-            @Html.TextBoxFor(m => m.Bill.TotalAmount, new { @class = "form-control", disabled = "true" })
-        </div>
-        <div>
-            @Html.LabelFor(m => m.Bill.PaymentMode)
-            @foreach (var method in paymentMethods)
+<div id="billModal" title="Create Bill" style="display:none;">
+    <div><span class="form-text">Customer Name :</span> @Html.TextBoxFor(m => m.Bill.CustomerName, new { @class = "form-control CustomerName" })</div>
+    <div>
+        <span class="form-text">items Needed :</span>
+        <select id="products" multiple>
+            @foreach (var item in Model.Items.Where(a=>a.StockAvailable > 0))
             {
-                @Html.RadioButtonFor(m => m.Bill.PaymentMode, method.Value)
-                @Html.LabelFor(m => m.Bill.PaymentMode, method.Key)
+                <option value="@item.ItemNumber" class="@item.ItemNumber" data-item="@item.ItemName" data-stockAvailable = "@item.StockAvailable" data-price="@item.Price">@item.ItemName</option>
             }
-        </div>
-        <div>
-            @Html.LabelFor(m => m.Bill.AmountPaid)
-            @Html.TextBoxFor(m => m.Bill.AmountPaid, new { @class = "form-control", @type = "number" })
-        </div>
-        <div><input type="submit" value="Add Bill" /></div>
-    </form>
+        </select>
+    </div>
+    <div><span class="form-text">Mobile Number :</span>@Html.TextBoxFor(m => m.Bill.CustomerMobileNumber, new { @class = "form-control mNumber", @type = "number" })</div>
+    <div><span class="form-text">Email Id :</span>@Html.TextBoxFor(m => m.Bill.CustomerEmailId, new { @class = "form-control Eid" })</div>
+    <div><span class="form-text">Address :</span>@Html.TextBoxFor(m => m.Bill.CustomerAddress, new { @class = "form-control address" })</div>
+    <div><span class="form-text">Amount :</span><span class="Amount" style="color:grey"></span></div>
+    <div><span class="form-text">Amount Paid :</span>@Html.TextBoxFor(m => m.Bill.AmountPaid, new { @class = "form-control", @type = "number" })</div>
+    <div>
+        <span class="form-text">Address :</span>
+        @foreach (var method in paymentMethods)
+        {
+            <span>
+                <input type="radio" id="option_@method.Value" name="SelectedPaymentOption" value="@method.Value" />
+                <label for="option_@method.Value">@method.Key</label>
+            </span>
+        }
+    </div>
+    <div class="productsTable">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+        </table>
+    </div>
 </div>
-    } *@
-
-
- <div id="billModal" title="Create Bill" style="display:none;">
-    <form id="addBill" asp-controller="Home" asp-action="AddBill" method="post">
-        <div><span class="form-text">Customer Name :</span> @Html.TextBoxFor(m => m.Bill.CustomerName, new { @class = "form-control CustomerName" })</div>         
-        <div>
-            <span class="form-text">items Needed :</span>
-            <select id="products" multiple>
-                @foreach (var item in Model.Items)
-                {
-                    <option value="@item.ItemNumber" class="@item.ItemNumber" data-price="@item.Price">@item.ItemName</option>
-                }
-            </select>
-        </div>
-        <div><span class="form-text">Mobile Number :</span>@Html.TextBoxFor(m => m.Bill.CustomerMobileNumber, new { @class = "form-control mNumber", @type = "number" })</div>
-        <div><span class="form-text">Email Id :</span>@Html.TextBoxFor(m => m.Bill.CustomerEmailId, new { @class = "form-control Eid" })</div>
-        <div><span class="form-text">Address :</span>@Html.TextBoxFor(m => m.Bill.CustomerAddress, new { @class = "form-control address" })</div>
-        <div><span class="form-text">Amount :</span><span class="Amount" style="color:grey"></span></div>
-        <div><span class="form-text">Amount Paid :</span>@Html.TextBoxFor(m => m.Bill.AmountPaid, new { @class = "form-control", @type = "number" })</div>
-        <div>
-            <span class="form-text">Address :</span>
-            @foreach (var method in paymentMethods)
-            {
-                <span>
-                    <input type="radio" id="option_@method.Value" name="SelectedPaymentOption" value="@method.Value" />
-                    <label for="option_@method.Value">@method.Key</label>
-                </span>
-            }
-        </div>
-        <div class="productsTable">
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="productsTableBody"></tbody>
-            </table>
-        </div>
-
-        <div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </form>
-</div> 
 
 <div id="historyModal" title="Orders History" style="display:none;font-size:8pt">
     <table border="1" id="historyTable" style="padding:0px 0px">
@@ -337,7 +247,7 @@
                     <td>@bill.AmountPaid</td>
                     <td>@bill.BillDateTime</td>
                     <td>
-                        <button class="btn btn-warning" style="display:inline-block">Print Bill</button>
+                        <button class="btn btn-warning printBill" data-itemnumber="@bill.BillNumber" style="display:inline-block">Print Bill</button>
                         <button class="btn btn-success" style="display:inline-block">send Message</button>
                     </td>
                 </tr>
@@ -346,14 +256,35 @@
     </table>
 </div>
 
+<div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">Bill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="billBody">
+                <!--Generated using JS-->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary printBill">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="productsModal" title="Products" style="display:none;font-size:8pt">
-    <table border="1" id="productsTable" style="padding:0px 0px">
+    <table border="1" id="productsTable" style="padding:0px 0px; width:100%">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Price</th>
                 <th>Description</th>
                 <th>Available stock</th>
+                <th style="display:none">Item Number</th>
                 <th></th>
             </tr>
         </thead>
@@ -365,9 +296,10 @@
                     <td>@bill.Price</td>
                     <td>@bill.Description</td>
                     <td>@bill.StockAvailable</td>
+                    <td style="display:none">@bill.ItemNumber</td>
                     <td>
-                        <button class="btn btn-warning editProduct" style="display:inline-block" data-itemNumber="@bill.ItemNumber">Edit</button>
-                        <button class="btn btn-danger deleteProduct" data-itemNumber="@bill.ItemNumber" style="display:inline-block">Delete</button>
+                        <button class="btn btn-warning editProduct" style="display:inline-block" data-itemnumber="@bill.ItemNumber">Edit</button>
+                        <button class="btn btn-danger deleteProduct" data-itemnumber="@bill.ItemNumber" style="display:inline-block">Delete</button>
                     </td>
                 </tr>
             }
@@ -413,6 +345,7 @@
                     formData.append('description', $('#Item_Description').val());
                     formData.append('price', $('#Item_Price').val());
                     formData.append('stocks', $('#Item_TotalStock').val());
+                    formData.append('itemNumber', $('#itemNumber').val());
                     $.ajax({
                         url: '@Url.Action("AddProduct", "Home")',
                         type: "post",
@@ -494,21 +427,26 @@
                         formData.append('customerName', $('.CustomerName').val());
                         formData.append('mobileNumber', $('.mNumber').val());
                         formData.append('emailId', $('.Eid').val());
-                        formData.append('address', $('.Address').val());
+                        formData.append('address', $('.address').val());
                         formData.append('amount', $('.Amount').text());
                         formData.append('billType', 2); // 2 - Bill
                         formData.append('AmountPaid', $('#Bill_AmountPaid').val());
                         formData.append('PaymentMode', pMode ? pMode.value : '');
 
-                        var products = [];
-                        $('#productsTableBody tr').each(function () {
-                            var productName = $(this).find('.product-name').text().trim();
-                            var quantity = parseInt($(this).find('.quantityInput').val(), 10) || 1;
+                        var productsTableBody = document.getElementById("productsTableBody");
+                        var rows = productsTableBody.getElementsByTagName("tr");
 
-                            products.push({ Product: productName, Quantity: quantity });
-                        });
+                        var products = "";
 
-                        formData.append('products', JSON.stringify(products));
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            var name = row.cells[1].textContent;
+                            var quantity = row.cells[2].querySelector("input.quantityInput").value;
+
+                            products += `${name}-${quantity},`;
+                        }
+
+                        formData.append('products', products);
 
                         var requestData = {
                         customerName: $('.CustomerName').val(),
@@ -597,33 +535,26 @@
         });
         $('.invoiceAmount').text(amount);
     });
-
         $('#products').on('change', function () {
         let amount = 0;
-        var selectedProducts = $('#products').val();
         $("#productsTableBody").empty();
         $("#selectedProducts").empty();
 
-        selectedProducts.forEach((item, index) => {
-            let name = $(`option[value='${item}']`).text();
-            let price = $(`option[value='${item}']`).data("price");
-            updateProductsTable(name, price, item, index + 1);
+        $('#products option:selected').each(function(index, option) {
+            let item = $(option).val();
+            let name = $(option).text();
+            let price = $(option).data("price");
+            let stockAvailable = $(option).data("stockavailable");
+            updateProductsTable(name, price, item, index + 1, stockAvailable);
             amount += parseInt(price);
 
-            // Add hidden inputs for form submission
-            $("#selectedProducts").append(`
-                <input type="hidden" name="Bill.Products[${index}].ItemNumber" value="${item}" />
-                <input type="hidden" name="Bill.Products[${index}].ItemName" value="${name}" />
-                <input type="hidden" name="Bill.Products[${index}].Price" value="${price}" />
-                <input type="hidden" name="Bill.Products[${index}].Quantity" id="quantity_${item}" value="1" />
-            `);
-        });
 
-        $('.Amount').text(`₹${amount}`);
-        $('#totalAmount').val(amount);
+            $('.Amount').text(`₹${amount}`);
+            $('#totalAmount').val(amount);
+        });
     });
 
-    function updateProductsTable(name, price, itemId, index) {
+    function updateProductsTable(name, price, itemId, index, stockAvailable) {
         var tableBody = document.getElementById("productsTableBody");
 
         var newRow = document.createElement("tr");
@@ -632,33 +563,60 @@
             <td>${index}</td>
             <td>${name}</td>
             <td>
-                <input type="number" class="quantityInput" value="1" min="1" data-item="${itemId}" data-price="${price}"
-                    style="width: 60px;" onchange="updateBill(this, '${itemId}')">
+                <input type="number" class="quantityInput" value="1" min="1" max="${stockAvailable}" data-stockAvailable="${stockAvailable}" data-item="${itemId}" data-price="${price}"
+                    style="width: 60px;">
             </td>
             <td>₹${price}</td>
             <td class="totalPrice">₹${price}</td>
-            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeProduct(this, '${itemId}')">Remove</button></td>
+            <td><button type="button" class="btn btn-danger btn-sm removeItem" data-item="${itemId}">Remove</button></td>
         `;
 
         tableBody.appendChild(newRow);
+
+        $('.removeItem').on('click', function() {
+            var button = this;
+            var itemId = button.getAttribute("data-item");
+            removeProduct(button, itemId);
+        });
+        $('.quantityInput').on('change', function() {
+            var inputElement = this;
+            var itemId = inputElement.getAttribute("data-item");
+            var stockAvailable = inputElement.getAttribute("data-stockAvailable");
+            updateBill(inputElement, itemId, parseInt(stockAvailable));
+        });
+
     }
 
-    function updateBill(inputElement, itemId) {
+
+    function updateBill(inputElement, itemId, stock) {
         var quantity = parseInt(inputElement.value) || 1;
+
+        if (quantity > stock) {
+            alert("Quantity exceeds available stock!");
+            quantity = stock;
+            inputElement.value = quantity;
+        }
+
         var price = parseFloat(inputElement.getAttribute("data-price"));
         var totalCell = inputElement.closest("tr").querySelector(".totalPrice");
 
+
         totalCell.textContent = `₹${price * quantity}`;
 
-        // Update hidden input for quantity
-        document.getElementById(`quantity_${itemId}`).value = quantity;
+        // // Update hidden input for quantity
+        // document.getElementById(`quantity_${itemId}`).value = quantity;
 
         updateTotalAmount();
     }
 
     function removeProduct(button, itemId) {
         button.closest("tr").remove();
-        document.getElementById(`quantity_${itemId}`).remove();
+        //document.getElementById(`quantity_${itemId}`).remove();
+        let products = $("#products").val(); // Get current selected values
+
+        $("#products").find("option[value='" + itemId + "']").prop("selected", false);
+
+
         updateTotalAmount();
     }
 
@@ -671,7 +629,7 @@
         $('#totalAmount').val(totalAmount);
     }
 
-        $('#invoiceProducts').on('change', function () {
+    $('#invoiceProducts').on('change', function () {
             let amount = 0;
             var products = $('#invoiceProducts').val();
             products.forEach((item) => {
@@ -680,9 +638,9 @@
             $('.invoiceAmount').text(amount);
         });
 
-        $('#historyTable,#productsTable').DataTable();
+    $('#historyTable,#productsTable').DataTable();
 
-        $('#historyModal').dialog({
+    $('#historyModal').dialog({
             autoOpen: false,
             modal: true,
             draggable: true,
@@ -694,11 +652,11 @@
             }
         });
 
-        $('#historyPopup').on('click', function () {
-            $("#historyModal").dialog("open");
-        });
+    $('#historyPopup').on('click', function () {
+        $("#historyModal").dialog("open");
+    });
 
-        $('#productsModal').dialog({
+    $('#productsModal').dialog({
             autoOpen: false,
             modal: true,
             draggable: true,
@@ -710,10 +668,10 @@
             }
         });
 
-        $('#productsPopup').on('click', function () {
-            $("#productsModal").dialog("open");
-        });
-        $('.deleteProduct').on('click', function () {
+    $('#productsPopup').on('click', function () {
+        $("#productsModal").dialog("open");
+    });
+    $('.deleteProduct').on('click', function () {
             var itemId = $(this).attr('data-itemNumber');
             var data = new FormData();
             data.append('id', itemId);
@@ -733,14 +691,131 @@
             });
         });
 
-        $('.editProduct').on('click', function () {
+    $('.editProduct').on('click', function () {
             $('#addItemModal').dialog("open");
             var itemDetails = $(this).parent().parent();
             $('#Item_ItemName').val($(itemDetails)[0].children[0].innerHTML);
             $('#Item_Price').val($(itemDetails)[0].children[1].innerHTML);
             $('#Item_Description').val($(itemDetails)[0].children[2].innerHTML);
             $('#Item_TotalStock').val($(itemDetails)[0].children[3].innerHTML);
+            $('#itemNumber').val($(itemDetails)[0].children[4].innerHTML);
+        });
+
+    $('.printBill').on('click', function() {
+      var itemNumber = $(this).data('itemnumber'); // Get item number from button data attribute
+
+      var pdfUrl = '@Url.Action("GenerateBill", "Home", new { itemNumber = "__itemNumber__" })'.replace('__itemNumber__', itemNumber);
+
+
+         $.ajax({
+            type: 'GET',
+            url: pdfUrl,
+            xhrFields: {
+              responseType: 'blob'
+            },
+            success: function(data) {
+              const blob = new Blob([data], { type: 'application/pdf' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'bill_' + itemNumber + '.pdf';
+              a.click();
+              URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+              console.log('Error: ' + error);
+            }
+        });
+
+    });
+
+    $('.viewBill').on('click', function() {
+        var itemNumber = $(this).data('itemnumber'); 
+
+        var url = '@Url.Action("GetBill", "Home", new { itemNumber = "__itemNumber__" })'.replace('__itemNumber__', itemNumber);
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(data) {
+                console.log(data);
+                CreateBillModal(data);
+            },
+            error: function(xhr, status, error) {
+              console.log('Error: ' + error);
+            }
         });
     });
 
+           function CreateBillModal(data) {
+      const billContainer = document.createElement('div');
+      const header = document.createElement('div');
+
+      header.innerHTML = `<span style="float:left">Invoice Number: ${data.bill.billNumber}</span> <span style="float:right">Date: ${data.bill.billDateTime}</span>`;
+      billContainer.appendChild(header);
+
+      const table = document.createElement('table');
+
+      const tableHeaders = ['Item Number', 'Item Name', 'Price', 'Quantity', 'Total'];
+      const tableHeaderRow = document.createElement('tr');
+      tableHeaders.forEach((header) => {
+        const tableHeaderCell = document.createElement('th');
+        tableHeaderCell.innerHTML = header;
+        tableHeaderRow.appendChild(tableHeaderCell);
+      });
+      table.appendChild(tableHeaderRow);
+
+      const items = data.bill.itemsPurchased.split(',');
+      var count = 1 ;
+      items.forEach((item) => {
+        const itemDetails = item.split('-');
+        const itemName = itemDetails[0];
+        const quantity = itemDetails[1];
+
+        const itemPrice = data.items.find((item) => item.itemName === itemName).price;
+        const total = itemPrice * quantity;
+
+        const tableRow = document.createElement('tr');
+        const tableCells = [
+          { value: count, type: 'td' },
+          { value: itemName, type: 'td' },
+          { value: itemPrice, type: 'td' },
+          { value: quantity, type: 'td' },
+          { value: total, type: 'td' },
+        ];
+        tableCells.forEach((cell) => {
+          const tableCell = document.createElement(cell.type);
+          tableCell.innerHTML = cell.value;
+          tableRow.appendChild(tableCell);
+        });
+        table.appendChild(tableRow);
+        count++;
+      });
+
+      table.style.width = '100%';
+    
+      billContainer.appendChild(table);
+
+     var billArea = document.createElement('div');
+      billArea.innerHTML = `<span style="float:right">Total: ${data.bill.totalAmount}</span> <br/> <span style="float:right">Amount Paid: ${data.bill.amountPaid}</span>`;
+      billContainer.appendChild(billArea);
+
+      const customerDetails = document.createElement('h5');
+      customerDetails.innerHTML = 'Customer Details';
+
+      const details = document.createElement('p');
+      details.innerHTML = `Name: ${data.bill.customerName} <br> Mobile Number: ${data.bill.customerMobileNumber} <br> Address: ${data.bill.customerAddress}`;
+
+      billContainer.appendChild(customerDetails);
+      billContainer.appendChild(details);
+
+      $('#billBody').append(billContainer);
+      $('#pdfModal').modal("show");
+
+      $('.close').on('click', function() {
+        $('#billBody').empty();
+        $('#pdfModal').modal("hide");
+        });
+    }
+    });
 </script>

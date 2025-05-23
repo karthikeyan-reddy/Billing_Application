@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ShoppingApp.data;
+namespace ShoppingApp.Data;
 
 public partial class BillingTable
 {
@@ -15,17 +15,17 @@ public partial class BillingTable
 
     public decimal TotalAmount { get; set; }
 
-    public int BillType { get; set; }
+    public int? BillType { get; set; }
 
-    public int PaymentMode { get; set; }
+    public int? PaymentMode { get; set; }
 
-    public decimal AmountPaid { get; set; }
+    public decimal? AmountPaid { get; set; }
 
     public long CustomerMobileNumber { get; set; }
 
     public string CustomerEmailId { get; set; } = null!;
 
-    public bool MessageStatus { get; set; }
+    public bool? MessageStatus { get; set; }
 
     public string ItemsPurchased { get; set; } = null!;
 }

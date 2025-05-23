@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ShoppingApp.data;
+namespace ShoppingApp.Data;
 
 public partial class ItemsTable
 {

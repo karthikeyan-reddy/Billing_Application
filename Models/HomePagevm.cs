@@ -1,4 +1,4 @@
-﻿using ShoppingApp.data;
+﻿using ShoppingApp.Data;
 
 namespace ShoppingApp.Models
 {
@@ -8,7 +8,7 @@ namespace ShoppingApp.Models
         public ItemsTable Item { get; set; }
         public List<BillingTable> History { get; set; }
         public List<ItemsTable> Items { get; set; }
-        public List<ItemsTable> FrequentItems { get;}
+        public List<ItemsTable> FrequentItems { get; set; }
         public int PayedAmount { get; set; }
         public int UnPayedAmount { get; set; }
     }
